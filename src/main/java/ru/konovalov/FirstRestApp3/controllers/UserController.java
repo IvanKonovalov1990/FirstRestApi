@@ -2,6 +2,7 @@ package ru.konovalov.FirstRestApp3.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import ru.konovalov.FirstRestApp3.models.User;
 
@@ -11,26 +12,22 @@ import java.time.LocalDate;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("/")
-    public ResponseEntity<User> sayLoginPassword() {
+    @GetMapping()
+    public ResponseEntity<?> sayLoginPassword() {
         System.out.println("Request!!!!!");
         return new ResponseEntity<>(new User("Ivan", "2511121"), HttpStatus.OK);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<User> sayLoginPasswordDate(@RequestBody User user) {
-        /*if(user.getLogin().isEmpty()){
-            System.out.println("Bad request");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }*/
+    @PostMapping()
+    public ResponseEntity<?> sayLoginPasswordDate(@RequestBody User user) {
         System.out.println("Request in post");
         user.setLocalDate(LocalDate.now());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-    /*@PostMapping("/")
-    public User sayLoginPasswordDate(@RequestBody User user) {
-        System.out.println("Request in post");
-        user.setLocalDate(LocalDate.now());
-        return user;
-    }*/
+
+    @ExceptionHandler
+    private ResponseEntity<String> handleException(HttpMessageNotReadableException e) {
+        System.out.println("Bad request!");
+        return new ResponseEntity<>("Bad request", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

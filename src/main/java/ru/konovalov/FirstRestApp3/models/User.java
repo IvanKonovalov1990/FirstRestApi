@@ -1,18 +1,33 @@
 package ru.konovalov.FirstRestApp3.models;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class User {
     private String login;
     private String password;
-    private LocalDate localDate;
-
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
+    private Date date;
+    private String email;
 
     public User() {
+    }
+
+    public User(String login, String password, String email) {
+        this.login = login;
+        this.password = password;
+        this.email = email;
+    }
+
+    public User(String login, String password, Date date) {
+        this.login = login;
+        this.password = password;
+        this.date = date;
+    }
+
+    public User(String login, String password, Date date, String email) {
+        this.login = login;
+        this.password = password;
+        this.date = date;
+        this.email = email;
     }
 
     public String getLogin() {
@@ -31,11 +46,19 @@ public class User {
         this.password = password;
     }
 
-    public LocalDate getLocalDate() {
-        return localDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setLocalDate(LocalDate localDate) {
-        this.localDate = localDate;
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

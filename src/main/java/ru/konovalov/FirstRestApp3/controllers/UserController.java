@@ -1,11 +1,17 @@
 package ru.konovalov.FirstRestApp3.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import ru.konovalov.FirstRestApp3.models.User;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.*;
 
 @RestController
@@ -15,9 +21,10 @@ public class UserController {
     private static final String url = "jdbc:postgresql://192.168.0.105:5432/postgres";
     private static final String user = "postgres";
     private static final String password = "postgrespassword";
+    private static final String filePath = "src/user.txt";
 
     @GetMapping()
-    public ResponseEntity<?> returnUserFromDBByLogin(@RequestBody User selectedUser) {
+    public ResponseEntity<?> returnUserFromDBByLogin(@RequestBody User selectedUser) throws JsonProcessingException {
         String query = "select p.login, p.password, p.date, i.email " +
                 "from people p join info i on p.login = i.login where p.login='" + selectedUser.getLogin() + "'";
 
@@ -37,6 +44,19 @@ public class UserController {
         if(selectedUser.getPassword()==null && selectedUser.getEmail()==null) {
             return new ResponseEntity<>("This login does not exist!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        //File fileForUsersInfo = new File("filePath");
+        //objectMapper.writeValue(fileForUsersInfo, selectedUser);
+        /*String jsonString = objectMapper.writeValueAsString(selectedUser);
+        String newRaw = "\n";
+        try {
+            Files.write(Paths.get(filePath), newRaw.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(filePath), jsonString.getBytes(), StandardOpenOption.APPEND);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }*/
 
         return new ResponseEntity<>(selectedUser, HttpStatus.OK);
     }
@@ -65,6 +85,6 @@ public class UserController {
 
     @ExceptionHandler
     private ResponseEntity<?> handleException(HttpMessageNotReadableException e) {
-        return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Bad request!", HttpStatus.BAD_REQUEST);
     }
 }
